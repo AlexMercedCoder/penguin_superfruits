@@ -9,6 +9,21 @@ const Fruit = require("../models/fruit.js") // fruit model
 //////////////////
 const router = express.Router()
 
+/////////////////////////////////
+// Router Middleware
+/////////////////////////////////
+
+// middleware to check if user is logged in
+router.use((req, res, next) => {
+    // check if logged in
+    if (req.session.loggedIn){
+        // send to routes
+        next()
+    } else {
+        res.redirect("/user/login")
+    }
+})
+
 
 ////////////////////////
 // Fruits Routes
@@ -37,6 +52,7 @@ router.get("/seed", (req, res) => {
 
 // index route - get - /fruits
 router.get("/", (req, res) => {
+    if (req.session.loggedIn)
     //find all the fruits
     Fruit.find({})
     .then((fruits) => {
